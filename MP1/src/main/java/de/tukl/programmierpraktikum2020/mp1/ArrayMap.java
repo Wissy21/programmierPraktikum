@@ -8,9 +8,9 @@ public class ArrayMap implements Map<String, Integer> {
     public Integer get(String key) {
         for (int i = 0; i < arr.length; i++) { //wenn key gefunden wird, wird value ausgegeben
             if (arr[i] != null) {
-                if (arr[i].getFirst() == key) {
+                if (arr[i].getFirst().equals(key)) {
                     int result;
-                    result = (int) arr[i].getSecond();
+                    result = arr[i].getSecond();
                     return result;
                 }
             }
@@ -24,22 +24,23 @@ public class ArrayMap implements Map<String, Integer> {
         for (int i = 0; i < arr.length; i++) { //wenn key gefunden, wird value neu gesetzt
             if (arr[i] != null) {
                 if (arr[i].getFirst().equals(key)) {
-                    arr[i].setSecond(value);
+                    remove(key);
+                    arr[i] = new ArrayPair(key, value);
                     eingefuegt = true;
                     break;
                 }
             }
         }
-        if (eingefuegt == false) {
+        if (!eingefuegt) {
             for (int i = 0; i < arr.length; i++) { //wenn key nicht gefunden, aber freie Einträge vorhanden, werden key und value gesetzt
-                if (arr[i] != null) {
-                    if (arr[i].getFirst() == null) {
-                        arr[i].setFirst(key);
-                        arr[i].setSecond(value);
-                        break;
-                    }
+                if (arr[i] == null) {
+                    arr[i] = new ArrayPair(key, value);
+                    eingefuegt = true;
+                    break;
                 }
             }
+        }
+        if (!eingefuegt) {
             //key nicht gefunden, keine freien Einträge -> Array muss neu erstellt und kopiert werden
             ArrayPair oldarr[] = new ArrayPair[arr.length]; //neues "altes" Array wird erstellt
             for (int i = 0; i < arr.length; i++) { //Einträge werden kopiert
@@ -60,19 +61,17 @@ public class ArrayMap implements Map<String, Integer> {
                     }
                 }
             }
-            this.arr = arr; //damit auch außerhalb dieser Methode geändert
         }
-
-
+        //  this.arr = arr; //damit auch außerhalb dieser Methode geändert
     }
+
 
     @Override
     public void remove(String key) {
         for (int i = 0; i < arr.length; i++) { //wenn key gefunden, werden beide Werte auf null gesetzt
             if (arr[i] != null) {
-                if (arr[i].getFirst() == key) {
-                    arr[i].setFirst(null);
-                    arr[i].setSecond(null);
+                if (arr[i].getFirst().equals(key)) {
+                    arr[i] = null;
                     break;
 
                 }
@@ -96,19 +95,21 @@ public class ArrayMap implements Map<String, Integer> {
 
     @Override
     public void keys(String[] array) throws IllegalArgumentException {
-
-        if (array.length < size() || array == null) { //wenn mehr Einträge vorhanden als das gegebene Array lang ist oder Array=null ist
+        if (array == null) {
             throw new IllegalArgumentException("Bitte geben Sie ein passendes Array ein!");
         }
-
-        for (int i = 0; i < arr.length; i++) {
+        if (array.length < size()) { //wenn mehr Einträge vorhanden als das gegebene Array lang ist oder Array=null ist
+            throw new IllegalArgumentException("Bitte geben Sie ein passendes Array ein!");
+        } else {
             int j = 0;
-            if (arr[i].getFirst() != null) { //alle Einträge des Arrays, die nicht null sind
-                array[j] = (String) arr[i].getFirst(); //werden in das eingegebene Array geschrieben (ohne Lücken)
-                j += 1;
+            for (int i = 0; i < arr.length; i++) {
+                if (arr[i] != null) {
+                    //alle Einträge des Arrays, die nicht null sind
+                    array[j] = arr[i].getFirst(); //werden in das eingegebene Array geschrieben (ohne Lücken)
+                    j += 1;
+                }
             }
-
         }
-
     }
 }
+
