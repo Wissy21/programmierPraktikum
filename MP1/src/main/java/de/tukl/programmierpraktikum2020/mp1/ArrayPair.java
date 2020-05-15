@@ -1,6 +1,6 @@
 package de.tukl.programmierpraktikum2020.mp1;
 
-public class ArrayPair<String, Integer> {
+public class ArrayPair {
     private String first;
     private Integer second;
 
