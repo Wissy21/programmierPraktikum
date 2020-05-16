@@ -1,9 +1,8 @@
 package de.tukl.programmierpraktikum2020.mp1;
 
 import java.util.Comparator;
-import java.util.List;
 
-public class  BibleAnalyzer {
+public class BibleAnalyzer {
 
     public static void countWords(Map<String, Integer> counts) {
         for (String word : Util.getBibleWords()) {
@@ -20,17 +19,25 @@ public class  BibleAnalyzer {
         Map<String, Integer> counts = new ArrayMap();
         //Map<String, Integer> counts = new ListMap<>();
         //Map<String, Integer> counts = new TreeMap<>(Comparator.<String>naturalOrder());
+
+        System.out.println("test1");
+
+
         countWords(counts);
+        System.out.println("test2");
 
         //Initialisierung eines sortierten Arrays mit den Worten
         String[] words = new String[counts.size()];
         counts.keys(words);
         sort(words, counts);
+        System.out.println("test3");
 
 
         // ausgeben aller Worte
-        for (int i = 0; i < words.length; i++){
-            System.out.println(counts.get(words[i]) + " " + words[i]);
+        for (String word : words) {
+            System.out.println(counts.get(word) + " " + word);
+        /*for (int i = 0; i < 5; i++){
+            System.out.println(counts.get(words[i]) + " " + words[i]);*/
         }
     }
 
