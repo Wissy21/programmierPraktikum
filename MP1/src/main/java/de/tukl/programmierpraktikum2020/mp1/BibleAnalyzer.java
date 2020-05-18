@@ -4,6 +4,7 @@ import java.util.Comparator;
 import java.util.List;
 
 public class BibleAnalyzer {
+
     public static void countWords(Map<String, Integer> counts) {
         for (String word : Util.getBibleWords()) {
             if (counts.get(word) == null) {
@@ -22,6 +23,7 @@ public class BibleAnalyzer {
         Map<String, Integer> counts = new ArrayMap();
         //Map<String, Integer> counts = new ListMap<>();
         //Map<String, Integer> counts = new TreeMap<>(Comparator.<String>naturalOrder());
+
         countWords(counts);
 
         //Initialisierung eines sortierten Arrays mit den Worten
@@ -33,23 +35,22 @@ public class BibleAnalyzer {
         // ausgeben aller Worte
         for (String word : words) {
             System.out.println(counts.get(word) + " " + word);
-        /*for (int i = 0; i < 5; i++){
-            System.out.println(counts.get(words[i]) + " " + words[i]);*/
-        // Print all words: it costs a lot of time
-        for (String word : setWords) {
-            System.out.println(ListMap.get(word) + " " + word);
         }
     }
 
+
+    //bubble sort = wir vertauschen wiederholt benachbarte Elemente, die falsch herum sortiert sind
+    //siehe Algodat V8-16 ff. Version 17.Juli 2019
     public static void sort(String[] words, Map<String, Integer> counts) {
-        // We are implementing the BubbleSort
-        String temp;
-        for (int i = 1; i < words.length; i++) {
-            for (int j = 0; j < words.length - i; j++) {
-                if (counts.get(words[j]) >= counts.get(words[j + 1])) {
-                    temp = words[j];
-                    words[j] = words[j + 1];
-                    words[j + 1] = temp;
+        boolean done = false;
+        while (!done){
+            done = true;
+            for (int i = 0; i < words.length-1; i++){
+                if (counts.get(words[i]) > counts.get(words[i+1])){
+                    String zwischenspeicher = words[i];
+                    words[i] = words[i+1];
+                    words[i+1] = zwischenspeicher;
+                    done = false;
                 }
             }
         }
