@@ -1,15 +1,18 @@
 package de.tukl.programmierpraktikum2020.mp1;
 
 import java.util.Comparator;
+import java.util.List;
 
 public class BibleAnalyzer {
-
     public static void countWords(Map<String, Integer> counts) {
         for (String word : Util.getBibleWords()) {
             if (counts.get(word) == null) {
+                // current word does not exists
                 counts.put(word, 1);
             } else {
-                counts.put(word, counts.get(word) + 1);
+                // current word already exists
+                Integer currValue = counts.get(word);
+                counts.put(word, currValue + 1);
             }
         }
     }
@@ -19,18 +22,12 @@ public class BibleAnalyzer {
         Map<String, Integer> counts = new ArrayMap();
         //Map<String, Integer> counts = new ListMap<>();
         //Map<String, Integer> counts = new TreeMap<>(Comparator.<String>naturalOrder());
-
-        System.out.println("test1");
-
-
         countWords(counts);
-        System.out.println("test2");
 
         //Initialisierung eines sortierten Arrays mit den Worten
         String[] words = new String[counts.size()];
         counts.keys(words);
         sort(words, counts);
-        System.out.println("test3");
 
 
         // ausgeben aller Worte
@@ -38,26 +35,21 @@ public class BibleAnalyzer {
             System.out.println(counts.get(word) + " " + word);
         /*for (int i = 0; i < 5; i++){
             System.out.println(counts.get(words[i]) + " " + words[i]);*/
+        // Print all words: it costs a lot of time
+        for (String word : setWords) {
+            System.out.println(ListMap.get(word) + " " + word);
         }
     }
 
-    //tauscht zwei benachbarte Elemente
-    static void swap (String[] words, int i){
-        String zwischenspeicher = words[i];
-        words[i] = words[i+1];
-        words[i+1] = zwischenspeicher;
-    }
-
-    //bubble sort = wir vertauschen wiederholt benachbarte Elemente, die falsch herum sortiert sind
-    //siehe Algodat V8-16 ff. Version 17.Juli 2019
     public static void sort(String[] words, Map<String, Integer> counts) {
-        boolean done = false;
-        while (!done){
-            done = true;
-            for (int i = 0; i < words.length-1; i++){
-                if (counts.get(words[i]) > counts.get(words[i+1])){
-                    swap(words, i);
-                    done = false;
+        // We are implementing the BubbleSort
+        String temp;
+        for (int i = 1; i < words.length; i++) {
+            for (int j = 0; j < words.length - i; j++) {
+                if (counts.get(words[j]) >= counts.get(words[j + 1])) {
+                    temp = words[j];
+                    words[j] = words[j + 1];
+                    words[j + 1] = temp;
                 }
             }
         }
