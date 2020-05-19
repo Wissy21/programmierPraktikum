@@ -47,15 +47,10 @@ public class ListMap<K, V> implements Map<K, V> {
             head = actualElement.next;
             size--;
         } else {
-            while (actualElement != null && actualElement.next != null && !actualElement.key.equals(key) ) {
+            while (actualElement != null && actualElement.next != null) {
                 if (actualElement.next.key.equals(key)) {
+                    actualElement.next = actualElement.next.next;
                     size--;
-                    if (actualElement.next.next != null) {
-                        actualElement.next = actualElement.next.next;
-                    } else {
-                        actualElement.next = null;
-                        break;// since no other element exist in list
-                    }
                 }
                 actualElement = actualElement.next;
             }
