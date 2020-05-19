@@ -6,18 +6,24 @@ import java.util.Comparator;
 
 public class TreeMap<K, V> implements Map<K, V>{
 
+//Klasse Tree erstellt einen Konoten, der Schlüssel, Wert und zwei weitere Teilbäume speichert.
 public class Tree{
     public K key;
     public V value;
     public Tree left;
     public Tree right;
 
+//Kontruktor Tree
     public Tree(K key, V value, Tree left, Tree right){
         this.key = key;
         this.value = value;
         this.left = left;
         this.right = right;
     }
+
+//alle helper untersuchen ein Baum der Klasse Tree.
+
+//helperGet gibt den zum Schlussel gespeicherten Wert zurück.
     public V helperGet(K key){
         if(this.key != null) {
             if (comp.compare(key, this.key) == 0) {
@@ -30,6 +36,7 @@ public class Tree{
         } else return null;
     }
 
+//helperPut speichert für der Wert key dern Wert value
     public void helperPut(K key, V value) {
         if(this.key != null) {
             if (comp.compare(key, this.key) == 0) {
@@ -49,7 +56,7 @@ public class Tree{
         }
 
     }
-
+//helperSize untersucht die Anzahl der Einträge
     public int helperSize() {
         if(this.key == null){
             return 0;
@@ -63,26 +70,21 @@ public class Tree{
     }
 }
 
-    /*public TreeMap getLeft() {return left;}
-    public TreeMap getRight() {return right;}
-    public K getKey() {return key;}
-    public V getValue() {return value;}
 
-    public void setLeft(TreeMap left) {this.left = left;}
-    public void setRight(TreeMap right) {this.right = right;}
-    public void setKey(K k) {this.key = k;}
-    public void setValue(V v) {this.value = v;}*/
-
+//hier wird ein leerer Baum der Klasse Tree implementiert
     Tree tree = new Tree(null, null, null, null);
 
 
-
+//Erstellen des Comparators
         Comparator<K> comp;
         public TreeMap(java.util.Comparator<K> compare){
             comp = compare;
         }
 
+//ab hier werden die Map Methoden überschrieben
 
+    //Um get, put und size zu implementiern wird auf die, in der inneren Klasse Tree
+    // implementierten Methoden zugegriffen.
     @Override
     public V get(K key) {
        return tree.helperGet(key);
@@ -105,8 +107,14 @@ public class Tree{
          return tree.helperSize();
 
     }
-    int i = 0;
 
+    // Um die Methode keys zu implementieren wird eine helper Methode erstellt.
+    //i ist eine Variable, die für die Hilfsmethode halper benutzt wird.
+
+        int i = 0;
+
+    //helper durchläuft den Array und gleichzeitig den Baum
+    // und fügt jeden Schlussel aus dem Baum an die ensprechende Stelle im Array.
         public void helper(Tree tree, K[] array){
             if (tree.key == null){
                 return;
@@ -122,8 +130,9 @@ public class Tree{
             }
         }
 
+    //keys überprüft zuerst ob array zu klein ist.
+    // Wenn es nicht der Fall ist, wird array an gie helper Funktion weitergegeben.
     @Override
-
     public void keys(K[] array) {
             i=0;
         if(array == null || array.length < size()){
