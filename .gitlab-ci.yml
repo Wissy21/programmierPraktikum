@@ -8,6 +8,9 @@ MP1:
       - MP1/build/reports
     when: always
     expire_in: 2 weeks
+  rules:
+    - changes:
+      - MP1/**/*
 
 MP2:
   image: openjdk:11
@@ -19,3 +22,6 @@ MP2:
       - MP2/build/reports
     when: always
     expire_in: 2 weeks
+  rules:
+    - changes:
+      - MP2/**/*
