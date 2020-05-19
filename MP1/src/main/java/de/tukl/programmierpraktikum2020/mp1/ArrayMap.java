@@ -44,8 +44,7 @@ public class ArrayMap implements Map<String, Integer> {
                 oldarr[i] = arr[i];
             }
 
-            //ArrayPair[] arr = new ArrayPair[2 * oldarr.length]; //Array mit doppelter Länge wird erstellt
-            this.arr = new ArrayPair[2 * oldarr.length]; //Array mit doppelter Länge wird erstellt
+            ArrayPair[] arr = new ArrayPair[2 * oldarr.length]; //Array mit doppelter Länge wird erstellt
             for (int i = 0; i < oldarr.length; i++) { //Einträge werden kopiert, damit hat neues Array mit doppelter Länge gleichen Namen wie ursprüngliches Array hat
                 arr[i] = oldarr[i];
             }
