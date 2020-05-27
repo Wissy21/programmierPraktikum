@@ -30,18 +30,71 @@ public class Plus implements Function{
         Function simpleF1 = f1.simplify();
         Function simpleF2 = f2.simplify();
         Function simple = new Plus(simpleF1, simpleF2);
-        //0+f2
-        if (simpleF1 instanceof Const && simpleF1.apply(0) == 0){
-                simple = simpleF2;
+
+        // f1 ist Const
+        if (simpleF1 instanceof Const){
+            double c1 = ((Const) simpleF1).number;
+            simple = helper_constant(c1,simpleF2);
         }
-        // f1+0
-        if (simpleF2 instanceof Const && simpleF2.apply(0) == 0){
-                simple = simpleF1;
+        //f2 ist Const
+        if (simpleF2 instanceof Const){
+            double c1 = ((Const) simpleF2).number;
+            simple = helper_constant(c1,simpleF1);
         }
-        // f1+f2 wenn beide Konstant
-        if (simpleF1 instanceof Const && simpleF2 instanceof Const){
-            simple = new Const(simpleF1.apply(0)+simpleF2.apply(0));
+        // beide sind Mult, davon jeweils eine Konstant und die andere X
+        if (simpleF1 instanceof Mult && simpleF2 instanceof Mult){
+            Mult m1 = (Mult) simpleF1;
+            Mult m2 = (Mult) simpleF2;
+            //m1.f1 Konstant
+            if (m1.f1 instanceof Const){
+                // m2.f1 Konstant
+                if (m2.f1 instanceof Const && m1.f2 instanceof X && m2.f2 instanceof X){
+                        simple = new Mult(new Const(((Const) m1.f1).number + ((Const) m2.f1).number),new X());
+                }
+                // m2.f2 Konstant
+                if (m2.f2 instanceof Const && m1.f2 instanceof X && m2.f1 instanceof X){
+                    simple = new Mult(new Const(((Const) m1.f1).number + ((Const) m2.f2).number),new X());
+                }
+            }
+            //m1.f2 Konstant
+            if (m1.f2 instanceof Const){
+                // m2.f1 Konstant
+                if (m2.f1 instanceof Const && m1.f1 instanceof X && m2.f2 instanceof X){
+                    simple = new Mult(new Const(((Const) m1.f2).number + ((Const) m2.f1).number),new X());
+                }
+                // m2.f2 Konstant
+                if (m2.f2 instanceof Const && m1.f1 instanceof X && m2.f1 instanceof X){
+                    simple = new Mult(new Const(((Const) m1.f2).number + ((Const) m2.f2).number),new X());
+                }
+            }
         }
         return simple;
+    }
+
+    private Function helper_constant(double c1, Function function){
+        Function result = new Mult(new Const(c1),function);
+
+        // Konstante ist 0
+        if (c1 == 0){
+            result =  function;
+        }
+        // beide Konstant
+        if (function instanceof Const){
+            double c2 = ((Const) function).number;
+            result = new Const(c1+c2);
+        }
+        // die andere Funktion ist ein Plus mit einer Konstanten -> c1 + (c2 + function) = c1+c2 + function
+        if (function instanceof Mult){
+            Mult m = (Mult)function;
+            if (m.f1 instanceof Const){
+                double c2 = ((Const) m.f1).number;
+                result = new Mult(new Const(c1+c2),m.f2);
+            }
+            if (m.f2 instanceof Const){
+                double c2 = ((Const) m.f2).number;
+                result = new Mult(new Const(c1+c2),m.f1);
+            }
+        }
+        return result;
     }
 }
