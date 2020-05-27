@@ -19,8 +19,12 @@ public class Const implements Function{
     }
 
     @Override
-    //hängt von den anderen Klassen ab, also erst nur apply und to String bei allen Klassen, danach derive
     public Function derive() {
         return new Const(0);
+    }
+
+    @Override
+    public Function simplify() {
+        return this;
     }
 }

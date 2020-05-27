@@ -19,6 +19,19 @@ public class Cos implements Function{
 
     @Override
     public Function derive() {
-        return null;
+        // -sin(f) * f'
+        return new Mult(new Const(-1),new Mult(new Sin(function), function.derive()));
     }
+
+    @Override
+    public Function simplify() {
+        Function simpleExp = function.simplify();
+        Function simple = new Cos(simpleExp);
+        // cos(Konstante)
+        if (simpleExp instanceof Const){
+            simple = new Const(Math.cos(simpleExp.apply(0)));
+        }
+        return simple;
+    }
+
 }

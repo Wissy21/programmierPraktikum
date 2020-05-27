@@ -9,6 +9,7 @@ public class X implements Function{
     public String toString() {
         return "x";
     }
+
     @Override
     public double apply(double x) {
         return x;
@@ -18,4 +19,11 @@ public class X implements Function{
     public Function derive() {
         return new Const(1);
     }
+
+    @Override
+    public Function simplify() {
+        return this;
+    }
+
 }
+
