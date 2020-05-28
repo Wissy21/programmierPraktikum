@@ -45,7 +45,25 @@ public class Mult implements Function {
         if (simpleF1 instanceof Exp && simpleF2 instanceof Exp){
             Function exp1 = ((Exp) simpleF1).exp;
             Function exp2 = ((Exp) simpleF2).exp;
-            simple = new Exp(new Mult(exp1,exp2));
+            simple = new Exp(new Plus(exp1,exp2).simplify());
+        }
+        //beide Pow und basis X -> exp addieren
+        if(simpleF1 instanceof Pow && simpleF2 instanceof Pow){
+            Pow p1 = (Pow) simpleF1;
+            Pow p2 = (Pow) simpleF2;
+            if (p1.basis instanceof X && p2.basis instanceof X){
+                simple = new Pow(p1.basis,new Plus(p1.exp,p2.exp)).simplify();
+            }
+        }
+        // beide X -> x^2
+        if (simpleF1 instanceof X && simpleF2 instanceof X){
+            simple = new Pow(new X(), new Const(2));
+        }
+        // beide sind Mult
+        if (simpleF1 instanceof Mult && simpleF2 instanceof Mult) {
+            Mult m1 = (Mult) simpleF1;
+            Mult m2 = (Mult) simpleF2;
+            simple = helper_multiplication(m1, m2);
         }
         return simple;
     }
@@ -71,11 +89,38 @@ public class Mult implements Function {
             Mult m = (Mult)function;
             if (m.f1 instanceof Const){
                 double c2 = ((Const) m.f1).number;
-                result = new Mult(new Const(c1*c2),m.f2);
+                result = new Mult(new Const(c1*c2),m.f2).simplify();
             }
             if (m.f2 instanceof Const){
                 double c2 = ((Const) m.f2).number;
-                result = new Mult(new Const(c1*c2),m.f1);
+                result = new Mult(new Const(c1*c2),m.f1).simplify();
+            }
+        }
+        return result;
+    }
+    private Function helper_multiplication(Mult m1, Mult m2){
+        // beide sind Mult, davon jeweils eine Konstant und die andere X
+        Function result = new Mult(m1,m2);
+        //m1.f1 Konstant
+        if (m1.f1 instanceof Const) {
+            // m2.f1 Konstant
+            if (m2.f1 instanceof Const && m1.f2 instanceof X && m2.f2 instanceof X) {
+                result = new Mult(new Const(((Const) m1.f1).number * ((Const) m2.f1).number), new Pow(new X(), new Const(2))).simplify();
+            }
+            // m2.f2 Konstant
+            if (m2.f2 instanceof Const && m1.f2 instanceof X && m2.f1 instanceof X) {
+                result = new Mult(new Const(((Const) m1.f1).number * ((Const) m2.f2).number), new Pow(new X(), new Const(2))).simplify();
+            }
+        }
+        //m1.f2 Konstant
+        if (m1.f2 instanceof Const) {
+            // m2.f1 Konstant
+            if (m2.f1 instanceof Const && m1.f1 instanceof X && m2.f2 instanceof X) {
+                result = new Mult(new Const(((Const) m1.f2).number * ((Const) m2.f1).number), new Pow(new X(), new Const(2))).simplify();
+            }
+            // m2.f2 Konstant
+            if (m2.f2 instanceof Const && m1.f1 instanceof X && m2.f1 instanceof X) {
+                result = new Mult(new Const(((Const) m1.f2).number * ((Const) m2.f2).number), new Pow(new X(), new Const(2))).simplify();
             }
         }
         return result;

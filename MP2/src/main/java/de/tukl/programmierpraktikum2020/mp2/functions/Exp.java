@@ -21,7 +21,7 @@ public class Exp implements Function {
     @Override
     public Function derive() {
         //exp(f) * f'
-        return new Mult(new Exp(exp), exp.derive());
+        return new Mult(new Exp(exp), exp.derive()).simplify();
     }
 
     @Override
