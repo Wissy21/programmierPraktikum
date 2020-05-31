@@ -1,6 +1,6 @@
 package de.tukl.programmierpraktikum2020.mp2.functions;
 
-public class Log implements Function{
+public class Log implements Function {
     public final Function function;
 
     public Log(Function function) {
@@ -10,7 +10,7 @@ public class Log implements Function{
 
     @Override
     public String toString() {
-            return "log(" + function.toString() + ")";
+        return "log("+function.toString()+")";
     }
 
 
@@ -21,17 +21,16 @@ public class Log implements Function{
 
     @Override
     public Function derive() {
-        return new Div(function.derive(),function);
+        return new Div(function.derive(), function);
     }
 
     @Override
     public Function simplify() {
         Function simpleF = function.simplify();
         Function simple = new Log(simpleF);
-
         // Log(Konstante)
-        if (simpleF instanceof Const){
-            simple = new Const(Math.log(simpleF.apply(0)));
+        if (simpleF instanceof Const && ((Const) simpleF).number == 1.0) {
+            simple = new Const(0.0);
         }
         return simple;
     }

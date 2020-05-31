@@ -1,6 +1,6 @@
 package de.tukl.programmierpraktikum2020.mp2.functions;
 
-public class X implements Function{
+public class X implements Function {
 
     public X() {
     }
@@ -17,7 +17,7 @@ public class X implements Function{
 
     @Override
     public Function derive() {
-        return new Const(1);
+        return new Const(1.0);
     }
 
     @Override

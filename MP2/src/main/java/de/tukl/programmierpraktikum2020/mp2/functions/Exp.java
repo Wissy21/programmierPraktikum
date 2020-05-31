@@ -10,7 +10,7 @@ public class Exp implements Function {
 
     @Override
     public String toString() {
-        return "exp(" + exp.toString() + ")";
+        return "exp("+exp.toString()+")";
     }
 
     @Override
@@ -29,8 +29,9 @@ public class Exp implements Function {
         Function simpleExp = exp.simplify();
         Function simple = new Exp(simpleExp);
         // Hochzahl Konstant
-        if (simpleExp instanceof Const){
-            simple = new Const(Math.exp(simpleExp.apply(0)));
+        if (simpleExp instanceof Const && ((Const) simpleExp).number == 0) {
+            //simple = new Const(Math.exp(simpleExp.apply(0.0)));
+            simple = new Const(1.0);
         }
         return simple;
     }

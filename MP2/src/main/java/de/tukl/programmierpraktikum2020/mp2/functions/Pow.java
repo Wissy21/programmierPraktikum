@@ -1,6 +1,6 @@
 package de.tukl.programmierpraktikum2020.mp2.functions;
 
-public class Pow implements Function{
+public class Pow implements Function {
     public final Function basis;
     public final Function exp;
 
@@ -11,7 +11,7 @@ public class Pow implements Function{
 
     @Override
     public String toString() {
-        return "(" + basis.toString() + " ^ " + exp.toString() + ")";
+        return "("+basis.toString()+" ^ "+exp.toString()+")";
     }
 
     @Override
@@ -19,7 +19,7 @@ public class Pow implements Function{
         return Math.pow(basis.apply(x), exp.apply(x));
     }
 
-    @Override
+    /*@Override
     public Function derive() {
         //Fallunterscheidung weil es einfacher ist hier zu vereinfachen, als später
         //wenn exp Const
@@ -35,6 +35,15 @@ public class Pow implements Function{
         else
         //nehme zur Hilfe, dass x^y = e^y*ln(x)
             return new Mult(this,new Mult(exp,new Log(basis)).derive());
+    }*/
+
+    @Override
+    public Function derive() {
+        Function power = new Plus(exp, new Const(-1));
+        Function deriveBasis = basis.derive();
+        Function op1 = new Mult(exp, deriveBasis);
+        Function op2 = new Pow(basis, power);
+        return new Mult(op1, op2);
     }
 
     @Override
@@ -43,24 +52,22 @@ public class Pow implements Function{
         Function simpleE = exp.simplify();
         Function simple = new Pow(simpleB, simpleE);
         // wenn der exp Konstant
-        if (exp instanceof Const){
-            double c = ((Const)exp).number;
+        if (exp instanceof Const) {
+            double c = ((Const) exp).number;
 
             // wenn exp == 0
-            if (c==0){
+            if (c == 0.0) {
                 simple = new Const(1);
             }
             // wenn exp == 1
-            if (c==1){
+            if (c == 1.0) {
                 simple = simpleB;
             }
         }
         //wenn beide Const
-        if (simpleB instanceof Const && simpleE instanceof Const){
-            simple = new Const(Math.pow(simpleB.apply(0),simpleE.apply(0)));
+        if (simpleB instanceof Const && simpleE instanceof Const) {
+            simple = new Const(Math.pow(((Const) simpleB).number, ((Const) simpleE).number));
         }
-
-
         return simple;
     }
 }

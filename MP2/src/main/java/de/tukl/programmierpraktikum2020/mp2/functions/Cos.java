@@ -1,6 +1,6 @@
 package de.tukl.programmierpraktikum2020.mp2.functions;
 
-public class Cos implements Function{
+public class Cos implements Function {
     final public Function function;
 
     public Cos(Function function) {
@@ -9,7 +9,7 @@ public class Cos implements Function{
 
     @Override
     public String toString() {
-        return "cos(" + function.toString() + ")";
+        return "cos("+function.toString()+")";
     }
 
     @Override
@@ -20,7 +20,7 @@ public class Cos implements Function{
     @Override
     public Function derive() {
         // -sin(f) * f'
-        return new Mult(new Const(-1),new Mult(new Sin(function), function.derive()));
+        return new Mult(new Const(-1), new Mult(new Sin(function), function.derive()));
     }
 
     @Override
@@ -28,8 +28,8 @@ public class Cos implements Function{
         Function simpleExp = function.simplify();
         Function simple = new Cos(simpleExp);
         // cos(Konstante)
-        if (simpleExp instanceof Const){
-            simple = new Const(Math.cos(simpleExp.apply(0)));
+        if (simpleExp instanceof Const && ((Const) simpleExp).number == 0.0) {
+            simple = new Const(1.0);
         }
         return simple;
     }

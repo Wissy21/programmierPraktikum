@@ -4,5 +4,7 @@ public interface Function {
     String toString();
     double apply(double x);
     Function derive();
-    Function simplify();
+    default Function simplify(){
+        return this;
+    };
 }

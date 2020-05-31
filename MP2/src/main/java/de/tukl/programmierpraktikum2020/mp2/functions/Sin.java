@@ -9,7 +9,7 @@ public class Sin implements Function {
 
     @Override
     public String toString() {
-        return "sin(" + function.toString() + ")";
+        return "sin("+function.toString()+")";
     }
 
     @Override
@@ -28,8 +28,8 @@ public class Sin implements Function {
         Function simpleExp = function.simplify();
         Function simple = new Sin(simpleExp);
         // sin(Konstante)
-        if (simpleExp instanceof Const){
-            simple = new Const(Math.sin(simpleExp.apply(0)));
+        if (simpleExp instanceof Const && ((Const) simpleExp).number == 0.0) {
+            simple = new Const(0.0);
         }
         return simple;
     }
