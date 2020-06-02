@@ -25,7 +25,7 @@ public class Plus implements Function {
         return new Plus(f1.derive(), f2.derive());
     }
 
-    /*@Override
+    @Override
     public Function simplify() {
         Function simpleF1 = f1.simplify();
         Function simpleF2 = f2.simplify();
@@ -153,22 +153,7 @@ public class Plus implements Function {
             }
         }
         return result;
-    }*/
-
-    @Override
-    public Function simplify() {
-        Function simpleF1 = f1.simplify();
-        Function simpleF2 = f2.simplify();
-        Function simple = new Plus(simpleF1, simpleF2);
-        if (simpleF1 instanceof Const) {
-            if (((Const) simpleF1).number == 0.0) {
-                simple = simpleF2;
-            } else if (simpleF2 instanceof Const) {
-                simple = new Const(((Const) simpleF1).number+((Const) simpleF2).number);
-            }
-        } else if (simpleF2 instanceof Const && ((Const) simpleF2).number == 0.0) {
-            simple = simpleF1;
-        }
-        return simple;
     }
+
+
 }

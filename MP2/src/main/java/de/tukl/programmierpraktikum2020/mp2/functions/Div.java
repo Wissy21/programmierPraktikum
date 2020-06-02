@@ -30,7 +30,7 @@ public class Div implements Function {
         return new Div(oben, unten);
     }
 
-    /*@Override
+    @Override
     public Function simplify() {
         Function simpleF1 = f1.simplify();
         Function simpleF2 = f2.simplify();
@@ -148,19 +148,6 @@ public class Div implements Function {
             }
         }
         return result;
-    }*/
-
-    @Override
-    public Function simplify() {
-        Function simpleF1 = f1.simplify();
-        Function simpleF2 = f2.simplify();
-        Function simple = new Div(simpleF1, simpleF2);
-        if (simpleF1 instanceof Const && ((Const) simpleF1).number == 0) {
-            simple = new Const(0.0);
-        } else if (simpleF2 instanceof Const && ((Const) simpleF2).number == 1.0) {
-            simple = simpleF1;
-        } else if (simpleF1 instanceof Const && simpleF2 instanceof Const && ((Const) simpleF2).number != 0)
-            simple = new Const(((Const) simpleF1).number / ((Const) simpleF2).number);
-        return simple;
     }
+
 }

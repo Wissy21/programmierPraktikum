@@ -19,23 +19,6 @@ public class Pow implements Function {
         return Math.pow(basis.apply(x), exp.apply(x));
     }
 
-    /*@Override
-    public Function derive() {
-        //Fallunterscheidung weil es einfacher ist hier zu vereinfachen, als später
-        //wenn exp Const
-        if (exp instanceof Const){
-            double c = ((Const)exp).number;
-            return new Mult(exp, new Pow(basis,new Const(c-1)));
-        }
-        // wenn basis Const
-        else if(basis instanceof Const){
-            return new Mult(this,new Log(basis));
-        }
-
-        else
-        //nehme zur Hilfe, dass x^y = e^y*ln(x)
-            return new Mult(this,new Mult(exp,new Log(basis)).derive());
-    }*/
 
     @Override
     public Function derive() {
