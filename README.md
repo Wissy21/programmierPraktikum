@@ -14,4 +14,6 @@ Betreuung
 ---------
 
 - Tutor: Christopher
-- Zeitslot für Abnahmen: MP1 - Mi (27.05.) 14:30
+- Zeitslot für Abnahmen: 
+  - MP1 - Mi (27.05.) 14:30
+  - MP2 - Mi (10.06.) 14:30
