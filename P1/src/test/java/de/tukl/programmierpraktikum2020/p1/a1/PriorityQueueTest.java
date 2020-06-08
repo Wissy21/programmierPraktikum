@@ -64,7 +64,10 @@ public class PriorityQueueTest {
         assertTrue(queue.isEmpty());
 
         // Test merge method with empty list queue
-        PriorityQueue<Integer> otherQueue = new ListQueue<>(Comparator.<Integer>naturalOrder());
+        PriorityQueue<Integer> otherQueue;
+        if (queue instanceof ListQueue) otherQueue = new ListQueue<>(Comparator.<Integer>naturalOrder());
+        else if (queue instanceof SkewHeap) otherQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
+        else otherQueue = new FibonacciHeap<>(Comparator.<Integer>naturalOrder());
 
         queue.merge(otherQueue);
         assertNull(queue.max());
