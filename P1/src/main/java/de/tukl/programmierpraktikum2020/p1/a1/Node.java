@@ -17,6 +17,7 @@ public class Node<E> {
     ArrayList<Node<E>> children;
     Node<E> parrent;
 
+
     public Node(E head) {
         this.head = head;
         this.out_degree = 0;
@@ -36,6 +37,10 @@ public class Node<E> {
         child.parrent = this;
     }
 
+    public void setHead(E head) {
+        this.head = head;
+    }
+
     /*public void increase_degree(int degree) {
         this.out_degree = this.out_degree + degree;
     }*/
@@ -50,7 +55,11 @@ public class Node<E> {
         }
         result.out_degree = this.out_degree;
         result.token = this.token;
-        result.parrent = this.parrent.copy();
+        if (this.parrent == null){
+            result.parrent = null;
+        } else{
+            result.parrent = this.parrent.copy();
+        }
         return result;
     }
 }

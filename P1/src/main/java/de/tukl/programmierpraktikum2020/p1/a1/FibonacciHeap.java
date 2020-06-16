@@ -13,13 +13,16 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
      * {@code >0} if {@code x > y}
      */
     Comparator<E> comparator;
-    ArrayList<Node<E>>[] degrees = new ArrayList[100];
+    ArrayList<Node<E>>[] degrees;
     ArrayList<Node<E>> forest;
     Node<E> max;
 
 
     public FibonacciHeap(Comparator<E> comparator) {
         this.comparator = comparator;
+        this.forest = new ArrayList<>();
+        this.degrees  = new ArrayList[100];
+        this.max = new Node<E>(null);
     }
 
 
@@ -30,11 +33,9 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
         //update forest
         forest.add(n);
         // update degrees
-        degrees[0].add(n);
+        addDegrees(n);
         //update max
-        if (comparator.compare(n.head, max.head) > 0) {
-            max = n;
-        }
+        max = max(max,n);
     }
 
     @Override
@@ -45,11 +46,10 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
             FibonacciHeap<E> otherFibonacciQueue = (FibonacciHeap<E>) otherQueue;
             for (Node<E> node:otherFibonacciQueue.forest) {
                 this.forest.add(node);
-                this.degrees[node.out_degree].add(node);
+                addDegrees(node);
             }
             //max = maximum of both max
-            if(comparator.compare(this.max.head,otherFibonacciQueue.max.head) < 0)
-                this.max = otherFibonacciQueue.max;
+            max = max(max,otherFibonacciQueue.max);
         }
         else {
             while (!otherQueue.isEmpty()) {
@@ -61,20 +61,25 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
 
     @Override
     public E deleteMax() {
-        //delete max
-        Node<E> result = max.copy();
-        ArrayList<Node<E>> children = result.children;
-        this.max = find_new_max();
-        degrees[result.out_degree].remove(result);
-        forest.remove(result);
+        E result = null;
+        if (max.head != null) {
+            //delete max
+            result = max.head;
+            ArrayList<Node<E>> children = new ArrayList<>();
+            children.addAll(max.children);
 
-        //all children become new trees
-        for (Node<E> child: children){
-            node_to_new_tree(child);
+            degrees[max.out_degree].remove(max);
+            forest.remove(max);
+
+            this.max = find_new_max();
+
+            //all children become new trees
+            for (Node<E> child : children) {
+                node_to_new_tree(child);
+            }
+            clear_up();
         }
-        clear_up();
-
-        return result.head;
+        return result;
     }
 
     @Override
@@ -95,40 +100,38 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
         //if elem found
         if (pair.result){
             Node<E> node = pair.value;
-            E oldValue = node.head;
             Node<E> parrent = node.parrent;
 
+
             //update elem
-            node.head = elem;
+            node.head = updatedElem;
 
-            //node becomes new tree
-            node_to_new_tree(node);
+            //node is not a root
+            if(node.parrent != null){
+                //node becomes new tree
+                node_to_new_tree(node);
 
-            //as long as the parrent has a token: make the parrent a new tree
-            while (parrent.token){
-                Node<E> newChild = parrent;
-                parrent = newChild.parrent;
-                node_to_new_tree(newChild);
-            }
-            // if a parrent without a token is found (and it's not a root), parrent gets a token and it stops
-            if (parrent.parrent !=null){
-                parrent.token =true;
+                //as long as the parrent has a token and is no root: make the parrent a new tree
+                parrent_to_new_tree(parrent);
             }
             //decrease elem
-            if (comparator.compare(oldValue,elem) > 0){
+            if (comparator.compare(elem,updatedElem) > 0){
                 //children become new trees
-                ArrayList<Node<E>> children = node.children;
+                ArrayList<Node<E>> children = new ArrayList<>();
+                children.addAll(node.children);
                 for (Node<E> child: children){
                     node_to_new_tree(child);
                 }
                 //update max
-                if (comparator.compare(oldValue,max.head) == 0){
+
+                if (comparator.compare(updatedElem,max.head) == 0){
+                    this.max = new Node<E>(null);
                     this.max = find_new_max();
                 }
             }// increase elem
-            else if(comparator.compare(max.head,node.head) < 0){
-                this.max = node;
-            }
+            else
+                max = max(max,node);
+
         }
         return pair.result;
     }
@@ -149,11 +152,10 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
      * @return {@code Node<E>} with max head
      */
     public Node<E> find_new_max(){
-        Node <E> result = null;
+        Node <E> result = new Node<E>(null);
         for (Node<E> node : forest) {
-            if (result == null || comparator.compare(result.head,node.head) < 0){
-                result = node;
-            }
+                result = max(result,node);
+
         }
         return result;
     }
@@ -163,7 +165,7 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
         int i = 0;
         while (i < degrees.length){
             // one out_degree more than once
-            if (degrees[i].size() > 1){
+            if (degrees[i] != null && degrees[i].size() > 1){
                 Node<E> root1 = degrees[i].get(0);
                 Node<E> root2 = degrees[i].get(1);
 
@@ -172,23 +174,17 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
                     //root2 becomes child of root1
                     forest.remove(root2);
                     root1.add_child(root2);
+                    addDegrees(root1);
                 } else {
                     //root1 becomes child of root2
                     forest.remove(root1);
                     root2.add_child(root1);
+                    addDegrees(root1);
                 }
                 degrees[i].remove(0);
-                degrees[i].remove(1);
                 // degrees to small
-                if (root1.out_degree >= degrees.length){
-                    ArrayList<Node<E>>[] temp = new ArrayList[degrees.length];
-                    System.arraycopy(degrees, 0, temp, 0, degrees.length);
-                    for (int j = 0; j < temp.length; j++) {
-                        this.degrees = new ArrayList[2 * temp.length];
-                        degrees[j] = temp[j];
-                    }
-                }
-                degrees[root1.out_degree].add(root1);
+
+
                 // i = i;
 
             } else i++;
@@ -203,21 +199,36 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
      * @param node {@code Node<E>} to remove
      */
     public void node_to_new_tree(Node<E> node){
-        //node as new root
-        node.token =false;
-        node.parrent =null;
-        //add child
-        //update forest
-        forest.add(node);
-        //update degrees
-        degrees[node.out_degree].add(node);
-        //update max unnecessary
+        if(node.parrent != null ) {
+            Node<E> parrent = node.parrent;
+            //node as new root
+            node.token = false;
+            node.parrent = null;
+            //add child
+            //update forest
+            forest.add(node);
+            //update degrees
+            addDegrees(node);
+            //update max unnecessary
 
-        //update parrent
-        Node<E> parrent = node.parrent;
-        parrent.out_degree -= 1;
-        parrent.children.remove(node);
-        degrees[parrent.out_degree].add(parrent);
+            //update parrent
+            parrent.out_degree -= 1;
+            parrent.children.remove(node);
+            addDegrees(parrent);
+        }
+    }
+
+    /**
+     * if node has a token: make the node a new tree; repeat;
+     * else set token (if not a root)
+     */
+    public void parrent_to_new_tree(Node<E> node){
+        if (node.token){
+            node_to_new_tree(node);
+            parrent_to_new_tree(node.parrent);
+        }else if(node.parrent!=null){
+            node.token = true;
+        }
     }
     /**
      *
@@ -256,5 +267,36 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
             toArray(elems,node.children);
 
         }
+    }
+
+    /**
+     * adds node to degree with position == out_degree
+     * increase degrees if necessary
+     */
+    public void addDegrees(Node<E> node){
+        int i = node.out_degree;
+        if (i >= degrees.length){
+            ArrayList<Node<E>>[] temp = new ArrayList[degrees.length];
+            System.arraycopy(degrees, 0, temp, 0, degrees.length);
+            for (int j = 0; j < temp.length; j++) {
+                this.degrees = new ArrayList[2 * temp.length];
+                degrees[j] = temp[j];
+            }
+        }
+        if (degrees[i] == null){
+            ArrayList<Node<E>> newDegree = new ArrayList<>();
+            newDegree.add(node);
+            degrees[i] = newDegree;
+        } else degrees[i].add(node);
+    }
+    public Node<E> max(Node<E> n1, Node<E> n2){
+        Node<E> result = n1;
+        if (n1.head == null){
+            result = n2;
+
+        } else
+        if(n2.head != null && comparator.compare(n1.head,n2.head) < 0)
+            result = n2;
+        return result;
     }
 }
