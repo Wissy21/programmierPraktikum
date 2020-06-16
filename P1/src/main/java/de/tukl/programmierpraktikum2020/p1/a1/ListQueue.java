@@ -50,7 +50,7 @@ public class ListQueue<E> implements PriorityQueue<E> {
     public boolean update(E elem, E updatedElem) {
         if (queue.contains(elem)) {
             queue.remove(elem);
-            insert(updatedElem);
+            this.insert(updatedElem);
             return true;
         }
         return false;
@@ -58,11 +58,16 @@ public class ListQueue<E> implements PriorityQueue<E> {
 
     @Override
     public void map(UnaryOperator<E> f) {
-        //LinkedList<E> tmpQueue = queue;
-        PriorityQueue<E> oldPriorityQueue = this;
+        LinkedList<E> tmpQueue = queue;
         queue = new LinkedList<>();
+        for (E elem : tmpQueue) this.insert(f.apply(elem));
+
+        /*ListQueue<E> oldPriorityQueue = this;
+        System.out.println(oldPriorityQueue.max());
+        this.queue = new LinkedList<>();
         while (!oldPriorityQueue.isEmpty()) {
+            System.out.println("MAP");
             this.insert(f.apply(oldPriorityQueue.deleteMax()));
-        }
+        }*/
     }
 }
