@@ -21,7 +21,7 @@ public class PriorityQueueTest {
         implementations.add(new FibonacciHeap<>(Comparator.<Integer>naturalOrder()));
         return implementations;
     }
-
+/*
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
     public void priorityQueueBeispiel(PriorityQueue<Integer> queue) {
@@ -48,6 +48,48 @@ public class PriorityQueueTest {
 
     }
 
+ */
+    @ParameterizedTest
+    @MethodSource("getPriorityQueueInstances")
+    public void priorityQueueInitialization(PriorityQueue<Integer> queue) {
+
+        for (PriorityQueue<Integer> currentQueue : getPriorityQueueInstances()) {
+            queue = currentQueue;
+            System.out.println("Teste priorityQueueInitialization mit " + queue.getClass().getSimpleName());
+
+
+            // Test: eine frisch initialisierte Queue ist leer
+            assertTrue(queue.isEmpty());
+            assertNull(queue.max());
+            assertNull(queue.deleteMax());
+
+
+        }
+    }
+    @ParameterizedTest
+    @MethodSource("getPriorityQueueInstances")
+    public void priorityQueueMax(PriorityQueue<Integer> queue) {
+
+        for (PriorityQueue<Integer> currentQueue : getPriorityQueueInstances()) {
+            queue = currentQueue;
+            System.out.println("Teste priorityQueueMax mit " + queue.getClass().getSimpleName());
+
+            for (int i = 0; i < 150; i++) {
+                queue.insert(i);
+            }
+            assertFalse(queue.isEmpty());
+            assertEquals(149, queue.max());
+            assertEquals(149, queue.deleteMax());
+            assertEquals(148, queue.max());
+            assertTrue(queue.update(queue.max(), -6));
+            assertEquals(147, queue.max());
+            assertTrue(queue.update(queue.max(), 200));
+            assertEquals(200, queue.deleteMax());
+            assertFalse(queue.update(155, 110));
+            assertEquals(146,queue.max());
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
     public void priorityQueueMergeListQueueTest(PriorityQueue<Integer> queue) {
@@ -71,7 +113,6 @@ public class PriorityQueueTest {
         }
         queue.merge(otherQueue);
         assertEquals(84, queue.max());
-        assertTrue(otherQueue.isEmpty());
 
         for (int i = 0; i < 50; i++) {
             queue.insert(i);

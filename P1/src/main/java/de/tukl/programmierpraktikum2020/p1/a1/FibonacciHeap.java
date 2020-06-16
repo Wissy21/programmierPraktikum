@@ -6,7 +6,6 @@ import java.util.function.UnaryOperator;
 
 public class FibonacciHeap<E> implements PriorityQueue<E>{
 
-
     /**
      * {@code 0} if {@code x == y};
      * {@code <0} if {@code x < y}; and
@@ -68,15 +67,18 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
             ArrayList<Node<E>> children = new ArrayList<>(max.children);
 
             degrees[max.out_degree].remove(max);
+
             forest.remove(max);
 
-            this.max = find_new_max();
+            this.max = new Node<>(null);
 
             //all children become new trees
             for (Node<E> child : children) {
                 node_to_new_tree(child);
             }
             clear_up();
+
+            find_new_max();
         }
         return result;
     }
@@ -125,7 +127,7 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
 
                 if (comparator.compare(updatedElem,max.head) == 0){
                     this.max = new Node<>(null);
-                    this.max = find_new_max();
+                    find_new_max();
                 }
             }// increase elem
             else
@@ -150,13 +152,10 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
      * finds the new max in the forrest
      * @return {@code Node<E>} with max head
      */
-    public Node<E> find_new_max(){
-        Node <E> result = new Node<>(null);
+    public void find_new_max(){
         for (Node<E> node : forest) {
-                result = max(result,node);
-
+                max = max(max,node);
         }
-        return result;
     }
 
     /** merges two nodes with the same out_degree until no out_degree appears more than once */
@@ -213,7 +212,6 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
             //update parrent
             parrent.out_degree -= 1;
             parrent.children.remove(node);
-            addDegrees(parrent);
         }
     }
 
