@@ -19,12 +19,12 @@ public class PriorityQueueTest {
         List<PriorityQueue<Integer>> implementations = new LinkedList<>();
         // Um Compilefehler zu verhindern, sind die Instanziierungen der PriorityQueue Implementierungen auskommentiert.
         // Kommentieren Sie die Zeilen ein, sobald Sie die entsprechenden Klassen implementiert haben.
-        implementations.add(new ListQueue<>(Comparator.<Integer>naturalOrder()));
+        //implementations.add(new ListQueue<>(Comparator.<Integer>naturalOrder()));
         //implementations.add(new SkewHeap<>(Comparator.<Integer>naturalOrder()));
         implementations.add(new FibonacciHeap<>(Comparator.<Integer>naturalOrder()));
         return implementations;
     }
-
+/*
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
     public void priorityQueueBeispiel(PriorityQueue<Integer> queue) {
@@ -55,6 +55,48 @@ public class PriorityQueueTest {
         }
     }
 
+ */
+    @ParameterizedTest
+    @MethodSource("getPriorityQueueInstances")
+    public void priorityQueueInitialization(PriorityQueue<Integer> queue) {
+
+        for (PriorityQueue<Integer> currentQueue : getPriorityQueueInstances()) {
+            queue = currentQueue;
+            System.out.println("Teste priorityQueueInitialization mit " + queue.getClass().getSimpleName());
+
+
+            // Test: eine frisch initialisierte Queue ist leer
+            assertTrue(queue.isEmpty());
+            assertNull(queue.max());
+            assertNull(queue.deleteMax());
+
+
+        }
+    }
+    @ParameterizedTest
+    @MethodSource("getPriorityQueueInstances")
+    public void priorityQueueMax(PriorityQueue<Integer> queue) {
+
+        for (PriorityQueue<Integer> currentQueue : getPriorityQueueInstances()) {
+            queue = currentQueue;
+            System.out.println("Teste priorityQueueMax mit " + queue.getClass().getSimpleName());
+
+            for (int i = 0; i < 150; i++) {
+                queue.insert(i);
+            }
+            assertFalse(queue.isEmpty());
+            assertEquals(149, queue.max());
+            assertEquals(149, queue.deleteMax());
+            assertEquals(148, queue.max());
+            assertTrue(queue.update(queue.max(), -6));
+            assertEquals(147, queue.max());
+            assertTrue(queue.update(queue.max(), 200));
+            assertEquals(200, queue.deleteMax());
+            assertFalse(queue.update(155, 110));
+            assertEquals(146,queue.max());
+        }
+    }
+
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
     public void priorityQueueMergeListQueueTest(PriorityQueue<Integer> queue) {
@@ -66,7 +108,7 @@ public class PriorityQueueTest {
         // Test merge method with empty list queue
         PriorityQueue<Integer> otherQueue;
         if (queue instanceof ListQueue) otherQueue = new ListQueue<>(Comparator.<Integer>naturalOrder());
-        //else if (queue instanceof SkewHeap) otherQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
+        else if (queue instanceof SkewHeap) otherQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
         else otherQueue = new FibonacciHeap<>(Comparator.<Integer>naturalOrder());
 
         queue.merge(otherQueue);
@@ -78,7 +120,6 @@ public class PriorityQueueTest {
         }
         queue.merge(otherQueue);
         assertEquals(84, queue.max());
-        assertTrue(otherQueue.isEmpty());
 
         for (int i = 0; i < 50; i++) {
             queue.insert(i);
