@@ -11,7 +11,11 @@ public class WeightedSetCovering {
 
     public WeightedSetCovering (Set <E> targetSet , Set <WeightedSet <E>> familyOfSets , PriorityQueue <WeightedSet <E>> queue) {
         this.familyofSets=familyOfSets;
-        this.queue=queue;
+   package de.tukl.programmierpraktikum2020.p1.a1;
+
+public class SkewHeap {
+}
+     this.queue=queue;
         this.targetSet=targetSet;
     }
 
