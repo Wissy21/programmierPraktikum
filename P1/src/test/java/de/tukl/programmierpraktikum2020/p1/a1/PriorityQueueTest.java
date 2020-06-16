@@ -21,34 +21,35 @@ public class PriorityQueueTest {
         implementations.add(new FibonacciHeap<>(Comparator.<Integer>naturalOrder()));
         return implementations;
     }
-/*
-    @ParameterizedTest
-    @MethodSource("getPriorityQueueInstances")
-    public void priorityQueueBeispiel(PriorityQueue<Integer> queue) {
-        System.out.println("Teste priorityQueueBeispiel mit " + queue.getClass().getSimpleName());
 
-        // Test: eine frisch initialisierte Queue ist leer
-        assertTrue(queue.isEmpty());
-        assertNull(queue.max());
-        assertNull(queue.deleteMax());
+    /*
+        @ParameterizedTest
+        @MethodSource("getPriorityQueueInstances")
+        public void priorityQueueBeispiel(PriorityQueue<Integer> queue) {
+            System.out.println("Teste priorityQueueBeispiel mit " + queue.getClass().getSimpleName());
 
-        // Fügen Sie hier weitere Tests ein.
-        // Sie dürfen auch gerne weitere Test-Methoden erstellen, z.B. priorityQueueBeispiel2 usw.
-        for (int i = 0; i < 50; i++) {
-            queue.insert(i);
+            // Test: eine frisch initialisierte Queue ist leer
+            assertTrue(queue.isEmpty());
+            assertNull(queue.max());
+            assertNull(queue.deleteMax());
+
+            // Fügen Sie hier weitere Tests ein.
+            // Sie dürfen auch gerne weitere Test-Methoden erstellen, z.B. priorityQueueBeispiel2 usw.
+            for (int i = 0; i < 50; i++) {
+                queue.insert(i);
+            }
+            assertFalse(queue.isEmpty());
+            assertEquals(49, queue.max());
+            assertEquals(49, queue.deleteMax());
+            assertEquals(48, queue.max());
+            assertTrue(queue.update(queue.max(), -6));
+            assertEquals(47, queue.max());
+            assertFalse(queue.update(105, 110));
+            assertEquals(47, queue.max());
+
         }
-        assertFalse(queue.isEmpty());
-        assertEquals(49, queue.max());
-        assertEquals(49, queue.deleteMax());
-        assertEquals(48, queue.max());
-        assertTrue(queue.update(queue.max(), -6));
-        assertEquals(47, queue.max());
-        assertFalse(queue.update(105, 110));
-        assertEquals(47, queue.max());
 
-    }
-
- */
+     */
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
     public void priorityQueueInitialization(PriorityQueue<Integer> queue) {
@@ -66,6 +67,7 @@ public class PriorityQueueTest {
 
         }
     }
+/*
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
     public void priorityQueueMax(PriorityQueue<Integer> queue) {
@@ -86,9 +88,9 @@ public class PriorityQueueTest {
             assertTrue(queue.update(queue.max(), 200));
             assertEquals(200, queue.deleteMax());
             assertFalse(queue.update(155, 110));
-            assertEquals(146,queue.max());
+            assertEquals(146, queue.max());
         }
-    }
+    } */
 
     @ParameterizedTest
     @MethodSource("getPriorityQueueInstances")
@@ -215,5 +217,9 @@ public class PriorityQueueTest {
         assertEquals(49, queue.max());
         queue.map(t -> -1 * t);
         assertEquals(-1, queue.max());
+        for (int i = 1; i < 50; i++) {
+            assertEquals(queue.max(), queue.deleteMax());
+        }
+        assertTrue(queue.isEmpty());
     }
 }
