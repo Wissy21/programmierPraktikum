@@ -21,7 +21,7 @@ public class PriorityQueueTest {
         // Kommentieren Sie die Zeilen ein, sobald Sie die entsprechenden Klassen implementiert haben.
         implementations.add(new ListQueue<>(Comparator.<Integer>naturalOrder()));
         //implementations.add(new SkewHeap<>(Comparator.<Integer>naturalOrder()));
-        //implementations.add(new FibonacciHeap<>(Comparator.<Integer>naturalOrder()));
+        implementations.add(new FibonacciHeap<>(Comparator.<Integer>naturalOrder()));
         return implementations;
     }
 
@@ -66,7 +66,7 @@ public class PriorityQueueTest {
         // Test merge method with empty list queue
         PriorityQueue<Integer> otherQueue;
         if (queue instanceof ListQueue) otherQueue = new ListQueue<>(Comparator.<Integer>naturalOrder());
-        else if (queue instanceof SkewHeap) otherQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
+        //else if (queue instanceof SkewHeap) otherQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
         else otherQueue = new FibonacciHeap<>(Comparator.<Integer>naturalOrder());
 
         queue.merge(otherQueue);
@@ -78,6 +78,7 @@ public class PriorityQueueTest {
         }
         queue.merge(otherQueue);
         assertEquals(84, queue.max());
+        assertTrue(otherQueue.isEmpty());
 
         for (int i = 0; i < 50; i++) {
             queue.insert(i);

@@ -14,8 +14,8 @@ public class ListQueue<E> implements PriorityQueue<E> {
 
     @Override
     public void insert(E elem) {
-        queue.add(elem);
-        queue.sort(comparator);
+        queue.addLast(elem);
+        queue.sort(comparator.reversed());
     }
 
     @Override
@@ -28,7 +28,7 @@ public class ListQueue<E> implements PriorityQueue<E> {
     @Override
     public E deleteMax() {
         if (!queue.isEmpty()) {
-            return queue.removeLast();
+            return queue.removeFirst();
         }
         return null;
     }
@@ -36,7 +36,7 @@ public class ListQueue<E> implements PriorityQueue<E> {
     @Override
     public E max() {
         if (!queue.isEmpty()) {
-            return queue.getLast();
+            return queue.getFirst();
         }
         return null;
     }
@@ -58,10 +58,11 @@ public class ListQueue<E> implements PriorityQueue<E> {
 
     @Override
     public void map(UnaryOperator<E> f) {
-        LinkedList<E> tmpQueue = queue;
+        //LinkedList<E> tmpQueue = queue;
+        PriorityQueue<E> oldPriorityQueue = this;
         queue = new LinkedList<>();
-        while (!tmpQueue.isEmpty()) {
-            insert(f.apply(tmpQueue.removeLast()));
+        while (!oldPriorityQueue.isEmpty()) {
+            this.insert(f.apply(oldPriorityQueue.deleteMax()));
         }
     }
 }
