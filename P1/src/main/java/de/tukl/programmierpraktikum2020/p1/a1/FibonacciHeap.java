@@ -70,13 +70,9 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
             for (Node<E> child : children) {
                 node_to_new_tree(child);
             }
-            //System.out.println("size vor clearup = " + forest.size());
             clear_up();
-            //System.out.println("size nach clearup = " + forest.size());
-            //System.out.println("altes max = " + max.head);
             find_new_max();
-            //System.out.println("neues max = " + max.head);
-        }
+            }
         return result;
     }
 
@@ -150,10 +146,7 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
      */
     public void find_new_max(){
         for (Node<E> node : forest) {
-            //System.out.println("Iteration: altes max = " + max.head);
-            //System.out.println("Iteration: node = " + node.head);
             max = max(max,node);
-            //System.out.println("Iteration: neues max = " + max.head);
         }
     }
 
@@ -170,6 +163,8 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
             if (degrees[i] != null && degrees[i].size() > 1){
                 Node<E> root1 = degrees[i].get(0);
                 Node<E> root2 = degrees[i].get(1);
+                degrees[i].remove(root1);
+                degrees[i].remove(root2);
 
                 //merge roots
                 if (comparator.compare(root1.head, root2.head) > 0){
@@ -183,12 +178,7 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
                     root2.add_child(root1);
                     degrees = addDegrees(root2,degrees);
                 }
-                degrees[i].remove(0);
-                // degrees to small
-
-
                 // i = i;
-
             } else i++;
         }
     }

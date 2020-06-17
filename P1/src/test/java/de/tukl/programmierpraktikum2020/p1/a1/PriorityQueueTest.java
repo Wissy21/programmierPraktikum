@@ -21,12 +21,15 @@ public class PriorityQueueTest {
         implementations.add(new FibonacciHeap<>(Comparator.<Integer>naturalOrder()));
         return implementations;
     }
+/*
+    @ParameterizedTest
+    @MethodSource("getPriorityQueueInstances")
+    public void priorityQueueBeispiel(PriorityQueue<Integer> queue) {
 
-    /*
-        @ParameterizedTest
-        @MethodSource("getPriorityQueueInstances")
-        public void priorityQueueBeispiel(PriorityQueue<Integer> queue) {
+        for (PriorityQueue<Integer> currentQueue : getPriorityQueueInstances()) {
+            queue = currentQueue;
             System.out.println("Teste priorityQueueBeispiel mit " + queue.getClass().getSimpleName());
+
 
             // Test: eine frisch initialisierte Queue ist leer
             assertTrue(queue.isEmpty());
@@ -48,6 +51,7 @@ public class PriorityQueueTest {
             assertEquals(47, queue.max());
 
         }
+    }
 
      */
     @ParameterizedTest
@@ -88,7 +92,7 @@ public class PriorityQueueTest {
             assertTrue(queue.update(queue.max(), 200));
             assertEquals(200, queue.deleteMax());
             assertFalse(queue.update(155, 110));
-            assertEquals(146, queue.max());
+            assertEquals(146,queue.max());
         }
     } */
 
@@ -102,6 +106,7 @@ public class PriorityQueueTest {
 
         // Test merge method with empty list queue
         PriorityQueue<Integer> otherQueue;
+        //same type
         if (queue instanceof ListQueue) otherQueue = new ListQueue<>(Comparator.<Integer>naturalOrder());
         else if (queue instanceof SkewHeap) otherQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
         else otherQueue = new FibonacciHeap<>(Comparator.<Integer>naturalOrder());
@@ -125,13 +130,24 @@ public class PriorityQueueTest {
             otherQueue.insert(i);
         }
         queue.merge(otherQueue);
-        assertTrue(otherQueue.isEmpty());
         assertEquals(84, queue.max());
 
         // Test map method
         UnaryOperator<Integer> f = t -> 2 * t;
         queue.map(f);
         assertEquals(168, queue.max());
+
+        // other type
+        PriorityQueue<Integer> otherTypeQueue;
+        if (queue instanceof ListQueue) otherTypeQueue = new SkewHeap<>(Comparator.<Integer>naturalOrder());
+        else if (queue instanceof SkewHeap) otherTypeQueue = new FibonacciHeap<>(Comparator.<Integer>naturalOrder());
+        else otherTypeQueue = new ListQueue<>(Comparator.<Integer>naturalOrder());
+
+        for (int i = 166; i <= 170 ; i++) {
+            otherTypeQueue.insert(i);
+        }
+        queue.merge(otherTypeQueue);
+        assertEquals(170, queue.max());
     }
 
     @ParameterizedTest
@@ -221,5 +237,33 @@ public class PriorityQueueTest {
             assertEquals(queue.max(), queue.deleteMax());
         }
         assertTrue(queue.isEmpty());
+    }
+
+    @ParameterizedTest
+    @MethodSource("getPriorityQueueInstances")
+    public void priorityQueueMap(PriorityQueue<Integer> queue) {
+
+        System.out.println("Teste priorityQueueBeispielMap mit " + queue.getClass().getSimpleName());
+
+        // Test: eine frisch initialisierte Queue ist leer
+        assertTrue(queue.isEmpty());
+
+        for (int i = 1; i < 150; i++) {
+            queue.insert(i);
+        }
+        assertEquals(149,queue.max());
+
+        for (int i = 1; i < 100; i++) {
+            assertEquals(queue.max(), queue.deleteMax());
+        }
+        assertEquals(50,queue.max());
+
+        queue.map(t -> t * 2);
+
+        assertEquals(100,queue.deleteMax());
+        assertEquals(98,queue.max());
+
+        queue.map((t -> t-2));
+        assertEquals(96,queue.max());
     }
 }
