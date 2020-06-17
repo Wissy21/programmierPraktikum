@@ -153,7 +153,7 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
     /** merges two nodes with the same out_degree until no out_degree appears more than once */
     public void clear_up() {
         // Array mit allen out_degrees
-        ArrayList<Node<E>>[] degrees = new ArrayList[100];
+        ArrayList<Node<E>>[] degrees = new ArrayList[2];
         for (Node<E> node : forest) {
             degrees = addDegrees(node, degrees);
         }
@@ -264,8 +264,8 @@ public class FibonacciHeap<E> implements PriorityQueue<E>{
      */
     public ArrayList<Node<E>>[] addDegrees(Node<E> node, ArrayList<Node<E>>[] degrees){
         int i = node.out_degree;
-        if (i >= degrees.length){
-            ArrayList<Node<E>>[] temp = new ArrayList[degrees.length];
+        while (i >= degrees.length){
+            ArrayList<Node<E>>[] temp = new ArrayList[degrees.length+1];
             System.arraycopy(degrees, 0, temp, 0, degrees.length);
             for (int j = 0; j < temp.length; j++) {
                 degrees = new ArrayList[2 * temp.length];
