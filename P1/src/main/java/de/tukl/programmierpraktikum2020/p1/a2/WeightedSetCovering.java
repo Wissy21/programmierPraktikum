@@ -2,29 +2,18 @@ package de.tukl.programmierpraktikum2020.p1.a2;
 
 import de.tukl.programmierpraktikum2020.p1.a1.PriorityQueue;
 
+import java.util.Comparator;
+import java.util.HashSet;
 import java.util.Set;
 import java.util.function.UnaryOperator;
 
-/*
-Gedanke: priorityqueue ist von max nach min sortiert, um kleinste gewichtung am anfang: mit kehrwert mapen
-danach jeweils den geringsten(höchsten) entfernen und set subtrahieren
-die subtrahierten sets speichern und mit targetsets vergleichen. wenn vollständig dann abbrechen und ausgeben
- */
 
 public class WeightedSetCovering<E> {
 
     PriorityQueue<WeightedSet<E>> queue;
     Set<E> targetSet;
     Set<WeightedSet<E>> familyOfSets;
-    private UnaryOperator kehrwert= new kehrwert();
 
-    private class kehrwert implements UnaryOperator<Float> {
-        @Override
-        public Float apply(Float e) {
-            float v = (float) 1 / e;
-            return v;
-        }
-    }
 
     public WeightedSetCovering(Set<E> targetSet, Set<WeightedSet<E>> familyOfSets, PriorityQueue<WeightedSet<E>> queue) {
         this.familyOfSets = familyOfSets;
@@ -33,15 +22,21 @@ public class WeightedSetCovering<E> {
     }
 
     public Set<WeightedSet<E>> greedyWeightedCover() {
-        for (WeightedSet E : familyOfSets) queue.insert(E);
-        queue.map(kehrwert);
+        Set<E> features = new HashSet<>();
+        Set<WeightedSet<E>> result = new HashSet<>();
+        for (WeightedSet<E> E : familyOfSets) queue.insert(E);
 
 
-        WeightedSet<E> min=queue.deleteMax();
-        for (WeightedSet E : familyOfSets) {
-            queue.update(E, E.subtractWeightedSet(min));
+        while(!features.containsAll(targetSet) || features.isEmpty()) {
+            WeightedSet<E> min = queue.deleteMax();
+            features.addAll(min.getSet());
+            result.add(min);
+
+            for (WeightedSet<E> E : familyOfSets) {
+                queue.update(E, E.subtractWeightedSet(min));
+            }
         }
-
+        return result;
 
     }
 }
