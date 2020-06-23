@@ -12,6 +12,7 @@ public class ListQueue<E> implements PriorityQueue<E> {
         this.comparator = comparator;
     }
 
+
     @Override
     public void insert(E elem) {
         queue.addLast(elem);
