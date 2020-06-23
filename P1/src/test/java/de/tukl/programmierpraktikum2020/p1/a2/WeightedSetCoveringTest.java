@@ -43,12 +43,24 @@ public class WeightedSetCoveringTest {
         WeightedSetCovering<Integer> test = new WeightedSetCovering<>(targetSet,familyOfSets,queue);
         Set<WeightedSet<Integer>> result = test.greedyWeightedCover();
         Set<String> soll_es_sein = Set.of("Bundle bundle 5", "Bundle bundle 2", "Bundle bundle 1", "Bundle bundle 4");
+        Set<Integer> erwartet = Set.of(1,2,3,4,5);
+        Set<Integer> features = new HashSet<>();
+        for (WeightedSet<Integer> w:result) {
+            features.addAll(w.getSet());
+        }
+        double price = 0.0;
+        for (WeightedSet<Integer> set: result) {
+            Bundle bundle = (Bundle) set;
+            price = price + bundle.price;
+        }
 
         Set<String> bundles = new HashSet<>();
         for (WeightedSet<Integer> w: result) {
             bundles.add(w.toString());
         }
 
-        assertEquals(soll_es_sein, bundles);
+        assertEquals(10.0,price,"die Kosten betragen nicht 10€");
+        assertEquals(erwartet,features,"es sind nicht alle Features enthalten");
+        assertEquals(soll_es_sein, bundles,"die Bundels entsprechen nicht denen aus dem Bsp");
     }
 }
