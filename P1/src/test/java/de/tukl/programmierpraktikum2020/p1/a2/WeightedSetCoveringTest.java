@@ -66,5 +66,11 @@ public class WeightedSetCoveringTest {
         assertTrue(greedySolution.contains(bundle5));
         assertFalse(greedySolution.contains(bundle6));
         assertFalse(queue.isEmpty());
+=======
+
+        assertEquals(10.0,price,"die Kosten betragen nicht 10€");
+        assertEquals(erwartet,features,"es sind nicht alle Features enthalten");
+        assertEquals(soll_es_sein, bundles,"die Bundels entsprechen nicht denen aus dem Bsp");
+>>>>>>> fe184471723d3b66943356e4821c66619ca99c9e
     }
 }
