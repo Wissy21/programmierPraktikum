@@ -91,7 +91,7 @@ public class GraphGenerator {
     }
 
     private void generateGraph(List<TriangulationPoint> points, Graph<Color, Integer> graph) throws GraphException {
-        // Create nodes and self-loops
+        // Create nodes
         Map<TriangulationPoint, Integer> nodeIds = new HashMap<>();
         for (TriangulationPoint point : points) {
             int nodeId = graph.addNode(Color.WHITE);
