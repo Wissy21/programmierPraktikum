@@ -15,7 +15,6 @@ import edu.uci.ics.jung.graph.DirectedSparseGraph;
 import edu.uci.ics.jung.graph.Graph;
 import edu.uci.ics.jung.visualization.BasicVisualizationServer;
 import edu.uci.ics.jung.visualization.RenderContext;
-import edu.uci.ics.jung.visualization.decorators.EdgeShape;
 
 import javax.swing.BorderFactory;
 import javax.swing.JFrame;
@@ -24,13 +23,10 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.Shape;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.geom.Ellipse2D;
-import java.awt.geom.Line2D;
 import java.awt.geom.Point2D;
 import java.util.Map;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -283,20 +279,6 @@ class GameBoard {
                 System.exit(1);
                 return "";
             }
-        });
-
-        // Edge shapes
-        Function<Edge, Shape> curve = EdgeShape.cubicCurve(jgraph);
-        Shape loop = new Ellipse2D.Float(-0.75f, -0.75f, 1.5f, 1.5f);
-        Shape line = new Line2D.Float(0, 0, 1, 0);
-        renderContext.setEdgeShapeTransformer(edge -> {
-            if (edge.fromId == edge.toId) {
-                return loop;
-            }
-            if (jgraph.getInEdges(edge.fromId).stream().noneMatch(reverse -> reverse.fromId == edge.toId)) {
-                return line; // unidirectional
-            }
-            return curve.apply(edge); // bidirectional
         });
     }
 
