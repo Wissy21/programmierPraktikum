@@ -17,3 +17,4 @@ Betreuung
 - Zeitslot für Abnahmen: 
   - MP1 - Mi (27.05.) 14:30
   - MP2 - Mi (10.06.) 14:30
+  - P1 - Mi (01.07.) 14:30
