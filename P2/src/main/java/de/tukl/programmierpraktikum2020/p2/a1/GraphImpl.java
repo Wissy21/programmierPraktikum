@@ -64,11 +64,14 @@ public class GraphImpl<D,W> implements Graph<D,W>{
 
     @Override
     public W getWeight(int fromId, int toId) throws InvalidEdgeException {
-        Node<D,W> from = nodes.get(fromId);
-        //durchsucht die ausgehenden Kanten vom Knoten fromID bis die Kante mit toID gefunden wurde
-        for (Edge<D,W> edge : from.outgoingE) {
-            if(edge.to.identifier == toId){
-                return edge.weigth;
+        if (!nodes.isEmpty()) {
+            Node<D, W> from = nodes.get(fromId);
+            //durchsucht die ausgehenden Kanten vom Knoten fromID bis die Kante mit toID gefunden wurde
+
+            for (Edge<D, W> edge : from.outgoingE) {
+                if (edge.to.identifier == toId) {
+                    return edge.weight;
+                }
             }
         }
         throw new InvalidEdgeException(fromId,toId);
@@ -77,13 +80,15 @@ public class GraphImpl<D,W> implements Graph<D,W>{
     @Override
     public void setWeight(int fromId, int toId, W weight) throws InvalidEdgeException {
         boolean found = false;
-        Node<D,W> from = nodes.get(fromId);
-        //durchsucht die ausgehenden Kanten vom Knoten fromID bis die Kante mit toID gefunden wurde
-        for (Edge<D,W> edge : from.outgoingE) {
-            if(edge.to.identifier == toId){
-                found = true;
-                edge.setWeigth(weight);
-                break;
+        if (!nodes.isEmpty()) {
+            Node<D, W> from = nodes.get(fromId);
+            //durchsucht die ausgehenden Kanten vom Knoten fromID bis die Kante mit toID gefunden wurde
+            for (Edge<D, W> edge : from.outgoingE) {
+                if (edge.to.identifier == toId) {
+                    found = true;
+                    edge.setWeigth(weight);
+                    break;
+                }
             }
         }
         if (!found) {

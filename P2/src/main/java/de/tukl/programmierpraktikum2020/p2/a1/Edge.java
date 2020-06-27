@@ -3,12 +3,12 @@ package de.tukl.programmierpraktikum2020.p2.a1;
 public class Edge<D,W> {
     Node<D,W> from;
     Node<D,W> to;
-    W weigth;
+    W weight;
 
     public Edge(Node<D, W> from, Node<D, W> to, W weigth) {
         this.from = from;
         this.to = to;
-        this.weigth = weigth;
+        this.weight = weigth;
     }
 
     public int getIdFrom(){
@@ -18,12 +18,12 @@ public class Edge<D,W> {
         return to.identifier;
     }
 
-    public void setWeigth(W weigth) {
-        this.weigth = weigth;
+    public void setWeigth(W weight) {
+        this.weight = weight;
     }
 
     public boolean equals(Edge<D,W> otherEdge){
-        return this.from.identifier == otherEdge.getIdFrom()
-                && this.to.identifier == otherEdge.getIdTo();
+        return (this.from.identifier == otherEdge.getIdFrom()
+                && this.to.identifier == otherEdge.getIdTo());
     }
 }
