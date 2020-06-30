@@ -2,9 +2,7 @@ package de.tukl.programmierpraktikum2020.p2.a2;
 
 import de.tukl.programmierpraktikum2020.p2.a1.*;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Set;
+import java.util.*;
 
 public class GameMoveImpl<D,W> implements GameMove {
     private final Graph<Color, Integer> spielfeld;
@@ -13,12 +11,63 @@ public class GameMoveImpl<D,W> implements GameMove {
         this.spielfeld = spielfeld;
     }
 
-    private void helper(int nodeId, Color color) throws InvalidNodeException, ForcedColorException {
+    private void helper(int nodeId, Color color) throws InvalidNodeException, ForcedColorException, InvalidEdgeException {
         Set<Integer> setin = spielfeld.getIncomingNeighbors(nodeId);
         Set<Integer> setout = spielfeld.getOutgoingNeighbors(nodeId);
-        int wold = 0;
-        int wnew = 0;
+        int wYELLOW = 0;
+        int wRED = 0;
+        int wGREEN = 0;
+        int wBLUE = 0;
+        int wcolor =0;
+        Color save = Color.WHITE;
 
+
+        for (Integer nodes : setin) {
+            switch (spielfeld.getData(nodes)) {
+                case RED:
+                    wRED += spielfeld.getWeight(nodes, nodeId);
+                    break;
+                case BLUE:
+                    wBLUE += spielfeld.getWeight(nodes, nodeId);
+                    break;
+                case GREEN:
+                    wGREEN += spielfeld.getWeight(nodes, nodeId);
+                    break;
+                case YELLOW:
+                    wYELLOW += spielfeld.getWeight(nodes, nodeId);
+                    break;
+                default:
+            }
+            if (spielfeld.getData(nodes)==color) {
+                    wcolor += spielfeld.getWeight(nodes, nodeId);
+            }
+        }
+
+            int wmax=Collections.max(Arrays.asList(wBLUE, wRED, wGREEN, wYELLOW));
+            if (wmax==wBLUE) {
+                spielfeld.setData(nodeId, Color.BLUE);
+                save = Color.BLUE;
+            }
+            if (wmax==wYELLOW) {
+                spielfeld.setData(nodeId, Color.YELLOW);
+                save = Color.YELLOW;
+            }
+            if (wmax==wGREEN) {
+                spielfeld.setData(nodeId, Color.GREEN);
+                save = Color.GREEN;
+            }
+            if (wmax == wRED) {
+                spielfeld.setData(nodeId, Color.RED);
+                save = Color.RED;
+            }
+            if (wmax!=wcolor) {throw new ForcedColorException(nodeId, color); }
+
+            for (Integer nodes : setout) {
+                helper(nodes, save);
+            }
+        }
+
+/*
         try {
             spielfeld.getIncomingNeighbors(nodeId);
             for (Integer nodes : setin) {
@@ -37,10 +86,10 @@ public class GameMoveImpl<D,W> implements GameMove {
 
         } catch (InvalidNodeException | InvalidEdgeException e) {
             e.printStackTrace();
-        }
+        }*/
 
 
-    }
+
 
     @Override
     public void setColor(int nodeId, Color color) throws GraphException, ForcedColorException {
@@ -99,7 +148,7 @@ public class GameMoveImpl<D,W> implements GameMove {
             for (Integer nodes : set) {
                 wtotal += spielfeld.getWeight(nodes, toId);
             }
-            //wenn Knoten gleiche Farbe, ändert sich nichts, wenn Gewichtung erhöht wird
+            //wenn Knoten gleiche Farbe, ändert sich nichts, wenn Gewichtung reduziert wird
             if (spielfeld.getData(fromId) != spielfeld.getData(toId)) {
                 for (Integer nodes : set) {
                     //wenn Knoten gleiche Farbe wie fromId wird w summiert
