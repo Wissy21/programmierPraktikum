@@ -21,7 +21,7 @@ public class GameMoveImpl<D,W> implements GameMove {
         int wcolor =0;
         Color save = Color.WHITE;
 
-
+        //Gewichtung für einzelne Farben wird berechnet
         for (Integer nodes : setin) {
             switch (spielfeld.getData(nodes)) {
                 case RED:
@@ -38,30 +38,33 @@ public class GameMoveImpl<D,W> implements GameMove {
                     break;
                 default:
             }
+            //Gewichtung für eingegebene Farbe wird berechnet
             if (spielfeld.getData(nodes)==color) {
                     wcolor += spielfeld.getWeight(nodes, nodeId);
             }
         }
-
+            //Farbe wird auf maximale Gewichtung gesetzt und Farbe gespeichert
             int wmax=Collections.max(Arrays.asList(wBLUE, wRED, wGREEN, wYELLOW));
             if (wmax==wBLUE) {
                 spielfeld.setData(nodeId, Color.BLUE);
                 save = Color.BLUE;
             }
-            if (wmax==wYELLOW) {
+            else if (wmax==wYELLOW) {
                 spielfeld.setData(nodeId, Color.YELLOW);
                 save = Color.YELLOW;
             }
-            if (wmax==wGREEN) {
+            else if (wmax==wGREEN) {
                 spielfeld.setData(nodeId, Color.GREEN);
                 save = Color.GREEN;
             }
-            if (wmax == wRED) {
+            else if (wmax == wRED) {
                 spielfeld.setData(nodeId, Color.RED);
                 save = Color.RED;
             }
-            if (wmax!=wcolor) {throw new ForcedColorException(nodeId, color); }
+            //wenn gespeicherte bzw gesetzte Farbe nicht der eingegeben Farbe entspicht: Exception
+            if (save != color) {throw new ForcedColorException(nodeId, color); }
 
+            //iterativ über folgende Knoten, wenn sich Farbe geändert hat
             for (Integer nodes : setout) {
                 helper(nodes, save);
             }
