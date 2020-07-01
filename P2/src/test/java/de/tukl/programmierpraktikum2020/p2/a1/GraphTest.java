@@ -45,7 +45,13 @@ public class GraphTest {
         graph.addEdge(2,0,1.0);
         graph.addEdge(2,1,1.0);
 
+        graph.setData(0,"first");
+        assertEquals("first", graph.getData(0));
+        assertThrows(InvalidNodeException.class, () -> graph.getData(5), "InvalidNodeException nicht geworfen");
+        assertThrows(InvalidNodeException.class, () -> graph.setData(5,"last"), "InvalidNodeException nicht geworfen");
+
         assertThrows(InvalidNodeException.class, () -> graph.addEdge(0,3,1.0), "Ausnahme InvalidNodeException nicht geworfen");
+        assertThrows(InvalidNodeException.class, () -> graph.addEdge(3,0,1.0), "Ausnahme InvalidNodeException nicht geworfen");
         assertThrows(DuplicateEdgeException.class, () -> graph.addEdge(0,1,3.0),"DuplicateEdgeException nicht geworfen");
 
         assertEquals(2.0, graph.getWeight(0,1));
@@ -57,9 +63,16 @@ public class GraphTest {
 
         Set<Integer> erwartetOutgoing = Set.of(1);
         assertEquals(erwartetOutgoing, graph.getOutgoingNeighbors(0));
+        assertThrows(InvalidNodeException.class, () -> graph.getOutgoingNeighbors(5),"Ausnahme InvalidNodeException nicht geworfen");
 
         Set<Integer> erwartetIncoming = Set.of(1,2);
         assertEquals(erwartetIncoming, graph.getIncomingNeighbors(0));
+        assertThrows(InvalidNodeException.class, () -> graph.getIncomingNeighbors(5),"Ausnahme InvalidNodeException nicht geworfen");
+
+        Set<Integer> erwartetNodeIds = Set.of(0,1,2);
+        assertEquals(erwartetNodeIds, graph.getNodeIds());
+
+
     }
     @Test
     public void exampleFourNodes() throws Exception {
