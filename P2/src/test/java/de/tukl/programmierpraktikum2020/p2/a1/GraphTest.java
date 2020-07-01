@@ -11,6 +11,8 @@ public class GraphTest {
     public void exampleOneNode() throws Exception {
         Graph<String, Double> graph = new GraphImpl<>();
         assertTrue(graph.getNodeIds().isEmpty());
+        assertThrows(InvalidEdgeException.class, () -> graph.getWeight(0,0));
+        assertThrows(InvalidEdgeException.class, () -> graph.setWeight(0,0,0.0));
         graph.addNode("a");
         graph.addEdge(0,0,0.0);
 
