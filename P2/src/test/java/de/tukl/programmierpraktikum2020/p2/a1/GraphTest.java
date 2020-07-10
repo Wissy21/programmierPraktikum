@@ -11,8 +11,6 @@ public class GraphTest {
     public void exampleOneNode() throws Exception {
         Graph<String, Double> graph = new GraphImpl<>();
         assertTrue(graph.getNodeIds().isEmpty());
-        assertThrows(InvalidEdgeException.class, () -> graph.getWeight(0,0));
-        assertThrows(InvalidEdgeException.class, () -> graph.setWeight(0,0,0.0));
         graph.addNode("a");
         graph.addEdge(0,0,0.0);
 
@@ -47,13 +45,7 @@ public class GraphTest {
         graph.addEdge(2,0,1.0);
         graph.addEdge(2,1,1.0);
 
-        graph.setData(0,"first");
-        assertEquals("first", graph.getData(0));
-        assertThrows(InvalidNodeException.class, () -> graph.getData(5), "InvalidNodeException nicht geworfen");
-        assertThrows(InvalidNodeException.class, () -> graph.setData(5,"last"), "InvalidNodeException nicht geworfen");
-
         assertThrows(InvalidNodeException.class, () -> graph.addEdge(0,3,1.0), "Ausnahme InvalidNodeException nicht geworfen");
-        assertThrows(InvalidNodeException.class, () -> graph.addEdge(3,0,1.0), "Ausnahme InvalidNodeException nicht geworfen");
         assertThrows(DuplicateEdgeException.class, () -> graph.addEdge(0,1,3.0),"DuplicateEdgeException nicht geworfen");
 
         assertEquals(2.0, graph.getWeight(0,1));
@@ -65,16 +57,9 @@ public class GraphTest {
 
         Set<Integer> erwartetOutgoing = Set.of(1);
         assertEquals(erwartetOutgoing, graph.getOutgoingNeighbors(0));
-        assertThrows(InvalidNodeException.class, () -> graph.getOutgoingNeighbors(5),"Ausnahme InvalidNodeException nicht geworfen");
 
         Set<Integer> erwartetIncoming = Set.of(1,2);
         assertEquals(erwartetIncoming, graph.getIncomingNeighbors(0));
-        assertThrows(InvalidNodeException.class, () -> graph.getIncomingNeighbors(5),"Ausnahme InvalidNodeException nicht geworfen");
-
-        Set<Integer> erwartetNodeIds = Set.of(0,1,2);
-        assertEquals(erwartetNodeIds, graph.getNodeIds());
-
-
     }
     @Test
     public void exampleFourNodes() throws Exception {
@@ -111,4 +96,131 @@ public class GraphTest {
         assertEquals(erwartetIncomingC, graph.getIncomingNeighbors(2));
 
     }
+
+    @Test
+    public void exampleManu1() throws GraphException {
+        Graph<String, Integer> graph = new GraphImpl<>();
+        assertTrue(graph.getNodeIds().isEmpty());
+
+        assertEquals(0, graph.addNode("a"));
+        assertFalse(graph.getNodeIds().isEmpty());
+        assertEquals(1, graph.addNode("b"));
+        assertEquals(2, graph.addNode("d"));
+        assertTrue(graph.getNodeIds().containsAll(Set.of(0, 1, 2)));
+
+        assertEquals("a", graph.getData(0));
+        assertEquals("b", graph.getData(1));
+        assertEquals("d", graph.getData(2));
+
+        graph.setData(2, "c");
+        assertEquals("c", graph.getData(2));
+
+        assertThrows(InvalidNodeException.class, () ->
+                graph.getData(3), "Ausnahme InvalidNodeException nicht geworfen");
+
+        assertThrows(InvalidNodeException.class, () ->
+                graph.setData(3, "e"), "Ausnahme InvalidNodeException nicht geworfen");
+
+        graph.addEdge(0, 1, 2);
+        graph.addEdge(1, 0, 3);
+        graph.addEdge(2, 0, 1);
+        graph.addEdge(2, 1, 2);
+
+        assertThrows(InvalidNodeException.class, () ->
+                graph.addEdge(3, 3, 2), "Ausnahme InvalidNodeException nicht geworfen");
+
+        assertThrows(InvalidNodeException.class, () ->
+                graph.addEdge(0, 3, 2), "Ausnahme InvalidNodeException nicht geworfen");
+
+        assertThrows(DuplicateEdgeException.class, () ->
+                graph.addEdge(0, 1, 2), "Ausnahme DuplicateEdgeException nicht geworfen");
+
+        assertThrows(DuplicateEdgeException.class, () ->
+                graph.addEdge(1, 0, 3), "Ausnahme DuplicateEdgeException nicht geworfen");
+
+        assertThrows(DuplicateEdgeException.class, () ->
+                graph.addEdge(2, 0, 1), "Ausnahme DuplicateEdgeException nicht geworfen");
+
+        assertThrows(DuplicateEdgeException.class, () ->
+                graph.addEdge(2, 1, 2), "Ausnahme DuplicateEdgeException nicht geworfen");
+
+        assertEquals(2, graph.getWeight(0, 1));
+        assertEquals(3, graph.getWeight(1, 0));
+        assertEquals(1, graph.getWeight(2, 0));
+        assertEquals(2, graph.getWeight(2, 1));
+
+        assertThrows(InvalidEdgeException.class, () ->
+                graph.getWeight(3, 3), "Ausnahme InvalidNodeException nicht geworfen");
+
+        graph.setWeight(2, 0, 4);
+        assertEquals(4, graph.getWeight(2, 0));
+
+        assertThrows(InvalidEdgeException.class, () ->
+                graph.setWeight(0, 2, 4), "Ausnahme InvalidEdgeException nicht geworfen");
+
+        // IncomingNeighborTest
+        assertEquals(Set.of(1, 2), graph.getIncomingNeighbors(0));
+        assertEquals(Set.of(0, 2), graph.getIncomingNeighbors(1));
+        assertEquals(Set.of(), graph.getIncomingNeighbors(2));
+
+        assertThrows(InvalidNodeException.class, () ->
+                graph.getIncomingNeighbors(3), "Ausnahme InvalidNodeException nicht geworfen");
+
+        // OutgoingNeighborTest
+        assertEquals(Set.of(1), graph.getOutgoingNeighbors(0));
+        assertEquals(Set.of(0), graph.getOutgoingNeighbors(1));
+        assertEquals(Set.of(0, 1), graph.getOutgoingNeighbors(2));
+
+        assertThrows(InvalidNodeException.class, () ->
+                graph.getOutgoingNeighbors(3), "Ausnahme InvalidNodeException nicht geworfen");
+
+    }
+
+    @Test
+    public void exampleManu2() throws Exception {
+
+        Graph<String, Integer> graph = new GraphImpl<>();
+        assertTrue(graph.getNodeIds().isEmpty());
+
+        assertEquals(0, graph.addNode("a"));
+        assertFalse(graph.getNodeIds().isEmpty());
+        assertEquals(1, graph.addNode("b"));
+        assertEquals(2, graph.addNode("c"));
+        assertEquals(3, graph.addNode("d"));
+        assertEquals(Set.of(0, 1, 2, 3), graph.getNodeIds());
+
+        // Tests for data
+        assertEquals("a", graph.getData(0));
+        assertEquals("b", graph.getData(1));
+        assertEquals("c", graph.getData(2));
+        assertEquals("d", graph.getData(3));
+
+        graph.addEdge(0, 1, 1); // a->b
+        graph.addEdge(0, 2, 1); // a->c
+        graph.addEdge(2, 1, 2); // c->b
+        graph.addEdge(2, 2, 2); // c->c
+        graph.addEdge(3, 1, 2); // d->b
+        graph.addEdge(3, 2, 1); // d->c
+
+        // Tests for weights
+        assertEquals(1, graph.getWeight(0, 1));
+        assertEquals(1, graph.getWeight(0, 2));
+        assertEquals(2, graph.getWeight(2, 1));
+        assertEquals(2, graph.getWeight(2, 2));
+        assertEquals(2, graph.getWeight(3, 1));
+        assertEquals(1, graph.getWeight(3, 2));
+
+        // IncomingNeighborTest
+        assertEquals(Set.of(), graph.getIncomingNeighbors(0));
+        assertEquals(Set.of(0, 2, 3), graph.getIncomingNeighbors(1));
+        assertEquals(Set.of(0, 2, 3), graph.getIncomingNeighbors(2));
+        assertEquals(Set.of(), graph.getIncomingNeighbors(3));
+
+        // OutgoingNeighborTest
+        assertEquals(Set.of(1, 2), graph.getOutgoingNeighbors(0));
+        assertEquals(Set.of(), graph.getOutgoingNeighbors(1));
+        assertEquals(Set.of(1, 2), graph.getOutgoingNeighbors(2));
+        assertEquals(Set.of(1, 2), graph.getOutgoingNeighbors(3));
+    }
+
 }
