@@ -18,58 +18,64 @@ public class GameMoveImpl<D,W> implements GameMove {
         int wRED = 0;
         int wGREEN = 0;
         int wBLUE = 0;
-        int wcolor =0;
+        int wcolor = 0;
         Color save = Color.WHITE;
 
-        //Gewichtung für einzelne Farben wird berechnet
-        for (Integer nodes : setin) {
-            switch (spielfeld.getData(nodes)) {
-                case RED:
-                    wRED += spielfeld.getWeight(nodes, nodeId);
-                    break;
-                case BLUE:
-                    wBLUE += spielfeld.getWeight(nodes, nodeId);
-                    break;
-                case GREEN:
-                    wGREEN += spielfeld.getWeight(nodes, nodeId);
-                    break;
-                case YELLOW:
-                    wYELLOW += spielfeld.getWeight(nodes, nodeId);
-                    break;
-                default:
-            }
-            //Gewichtung für eingegebene Farbe wird berechnet
-            if (spielfeld.getData(nodes)==color) {
+
+        if (spielfeld.getData(nodeId) == Color.WHITE) {
+            spielfeld.setData(nodeId, color);
+        } else if (spielfeld.getData(nodeId) == color) {
+            spielfeld.setData(nodeId, color);
+        } else {
+
+            //Gewichtung für einzelne Farben wird berechnet
+            for (Integer nodes : setin) {
+                switch (spielfeld.getData(nodes)) {
+                    case RED:
+                        wRED += spielfeld.getWeight(nodes, nodeId);
+                        break;
+                    case BLUE:
+                        wBLUE += spielfeld.getWeight(nodes, nodeId);
+                        break;
+                    case GREEN:
+                        wGREEN += spielfeld.getWeight(nodes, nodeId);
+                        break;
+                    case YELLOW:
+                        wYELLOW += spielfeld.getWeight(nodes, nodeId);
+                        break;
+                    default:
+                }
+                //Gewichtung für eingegebene Farbe wird berechnet
+                if (spielfeld.getData(nodes) == color) {
                     wcolor += spielfeld.getWeight(nodes, nodeId);
+                }
             }
-        }
             //Farbe wird auf maximale Gewichtung gesetzt und Farbe gespeichert
-            int wmax=Collections.max(Arrays.asList(wBLUE, wRED, wGREEN, wYELLOW));
-            if (wmax==wBLUE) {
+            int wmax = Collections.max(Arrays.asList(wBLUE, wRED, wGREEN, wYELLOW));
+            if (wmax == wBLUE) {
                 spielfeld.setData(nodeId, Color.BLUE);
                 save = Color.BLUE;
-            }
-            else if (wmax==wYELLOW) {
+            } else if (wmax == wYELLOW) {
                 spielfeld.setData(nodeId, Color.YELLOW);
                 save = Color.YELLOW;
-            }
-            else if (wmax==wGREEN) {
+            } else if (wmax == wGREEN) {
                 spielfeld.setData(nodeId, Color.GREEN);
                 save = Color.GREEN;
-            }
-            else if (wmax == wRED) {
+            } else if (wmax == wRED) {
                 spielfeld.setData(nodeId, Color.RED);
                 save = Color.RED;
             }
             //wenn gespeicherte bzw gesetzte Farbe nicht der eingegeben Farbe entspicht: Exception
-            if (save != color) {throw new ForcedColorException(nodeId, color); }
+            if (save != color) {
+                throw new ForcedColorException(nodeId, color);
+            }
 
             //iterativ über folgende Knoten, wenn sich Farbe geändert hat
             for (Integer nodes : setout) {
                 helper(nodes, save);
             }
         }
-
+    }
 /*
         try {
             spielfeld.getIncomingNeighbors(nodeId);
@@ -96,11 +102,7 @@ public class GameMoveImpl<D,W> implements GameMove {
 
     @Override
     public void setColor(int nodeId, Color color) throws GraphException, ForcedColorException {
-        if (spielfeld.getData(nodeId) == Color.WHITE) {
-            spielfeld.setData(nodeId, color);
-        } else if (spielfeld.getData(nodeId) == color) {
-            spielfeld.setData(nodeId, color);
-        } else helper(nodeId, color);
+             helper(nodeId, color);
     }
 
     @Override
@@ -127,7 +129,7 @@ public class GameMoveImpl<D,W> implements GameMove {
         //Berechnung
         if (w > (wtotal / 2)) {
             try {
-                setColor(toId, spielfeld.getData(fromId));
+                helper(toId, spielfeld.getData(fromId));
 
             } catch (ForcedColorException e) {
                 e.printStackTrace();
@@ -163,7 +165,7 @@ public class GameMoveImpl<D,W> implements GameMove {
             //Berechnung
             if (w > (wtotal / 2)) {
                 try {
-                    setColor(toId, spielfeld.getData(fromId));
+                    helper(toId, spielfeld.getData(fromId));
 
                 } catch (ForcedColorException e) {
                     e.printStackTrace();
