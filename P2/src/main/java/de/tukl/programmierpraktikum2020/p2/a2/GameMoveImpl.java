@@ -18,13 +18,13 @@ public class GameMoveImpl<D,W> implements GameMove {
         int wRED = 0;
         int wGREEN = 0;
         int wBLUE = 0;
-        int wcolor = 0;
+        int wcolor=0;
         Color save = Color.WHITE;
 
 
-        if (spielfeld.getData(nodeId) == Color.WHITE) {
+        if (spielfeld.getData(nodeId).equals(Color.WHITE)) {
             spielfeld.setData(nodeId, color);
-        } else if (spielfeld.getData(nodeId) == color) {
+        } else if (spielfeld.getData(nodeId).equals(color)) {
             spielfeld.setData(nodeId, color);
         } else {
 
@@ -45,8 +45,10 @@ public class GameMoveImpl<D,W> implements GameMove {
                         break;
                     default:
                 }
+            }
+            for (Integer nodes : setin) {
                 //Gewichtung für eingegebene Farbe wird berechnet
-                if (spielfeld.getData(nodes) == color) {
+                if (spielfeld.getData(nodes).equals(color)) {
                     wcolor += spielfeld.getWeight(nodes, nodeId);
                 }
             }
@@ -66,7 +68,7 @@ public class GameMoveImpl<D,W> implements GameMove {
                 save = Color.RED;
             }
             //wenn gespeicherte bzw gesetzte Farbe nicht der eingegeben Farbe entspicht: Exception
-            if (save != color) {
+            if (!(save.equals(color))) {
                 throw new ForcedColorException(nodeId, color);
             }
 
@@ -121,7 +123,7 @@ public class GameMoveImpl<D,W> implements GameMove {
         if (spielfeld.getData(fromId) != spielfeld.getData(toId)) {
             for (Integer nodes : set) {
                 //wenn Knoten gleiche Farbe wie fromId wird w summiert
-                if (spielfeld.getData(fromId) == spielfeld.getData(nodes)) {
+                if (spielfeld.getData(fromId).equals(spielfeld.getData(nodes))) {
                     w += spielfeld.getWeight(nodes, toId);
                 }
             }
@@ -154,10 +156,10 @@ public class GameMoveImpl<D,W> implements GameMove {
                 wtotal += spielfeld.getWeight(nodes, toId);
             }
             //wenn Knoten gleiche Farbe, ändert sich nichts, wenn Gewichtung reduziert wird
-            if (spielfeld.getData(fromId) != spielfeld.getData(toId)) {
+            if (!(spielfeld.getData(fromId).equals(spielfeld.getData(toId)))) {
                 for (Integer nodes : set) {
                     //wenn Knoten gleiche Farbe wie fromId wird w summiert
-                    if (spielfeld.getData(fromId) == spielfeld.getData(nodes)) {
+                    if (spielfeld.getData(fromId).equals(spielfeld.getData(nodes))) {
                         w += spielfeld.getWeight(nodes, toId);
                     }
                 }
